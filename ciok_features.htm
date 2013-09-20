@@ -316,7 +316,7 @@
 /////////////////////////////////////////////////////CHECKME
 	function convertSelectedToPolygon2(){
 		var selectedFeatures=vectors.selectedFeatures;
-		var points=convertToPoints(selectedFeatures);
+		var points=convertToPoints2(selectedFeatures);
 		//var rings[];
 		var rings =new Array();
 		for (var i=0, l=points.length; i<l; i++){
@@ -327,7 +327,7 @@
 		vectors.removeFeatures(vectors.selectedFeatures);
 	}
 
-	function convertToPoints(features){
+	function convertToPoints2(features){
 		//var points[][];
 		var points =new Array();
 		var i=0;
@@ -340,20 +340,20 @@
 					var point=convertFeatureToPoint(features[fid].geometry.components[comp]);
 					if (!point){
 						// comp is not a Point geometry
-						merge(points,convertToPoints(features[fid].geometry.components[comp]));
+						merge(points,convertToPoints2(features[fid].geometry.components[comp]));
 					} else {
 						points[i][j]=point;
 					}
 				}
 //			} else if (features[fid].components instanceof OpenLayers.Geometry.Collection){
-//			//	points[i++]=convertToPoints(features[fid]);
+//			//	points[i++]=convertToPoints2(features[fid]);
 //				//points[i++]=convertFeatureToPoint(features[fid].components);
 //				for (var comp in features[fid].components){
 //					j=j+1;
 //					var point=convertFeatureToPoint(features[fid].geometry.components[comp]);
 //					if (!point){
 //						// comp is not a Point geometry
-//						merge(points,convertToPoints(features[fid].geometry.components[comp]));
+//						merge(points,convertToPoints2(features[fid].geometry.components[comp]));
 //					} else {
 //						points[i][j]=point;
 //					}
