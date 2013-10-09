@@ -86,15 +86,14 @@
 			map = new OpenLayers.Map({
 				div: "map",
 				layers: [
-					new OpenLayers.Layer.OSM(),
-					new OpenLayers.Layer.Google("Google Streets", {visibility: false}),
-					// the SATELLITE layer has all 22 zoom level, so we add it first to
-					// become the internal base layer that determines the zoom levels of the
-					// map.
 					new OpenLayers.Layer.Google(
 						"Google Satellite",
 						{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
 					),
+					new OpenLayers.Layer.Google("Google Streets", {visibility: false}),
+					// the SATELLITE layer has all 22 zoom level, so we add it first to
+					// become the internal base layer that determines the zoom levels of the
+					// map.
 					new OpenLayers.Layer.Google(
 						"Google Physical",
 						{type: google.maps.MapTypeId.TERRAIN, visibility: false}
@@ -107,13 +106,20 @@
 						"Google Hybrid",
 						{type: google.maps.MapTypeId.HYBRID, numZoomLevels: 22, visibility: false}
 					),
+					new OpenLayers.Layer.OSM(),
 					new OpenLayers.Layer("Blank",{isBaseLayer: true}),
 					//world,
 					vectors
 				],
-				center: new OpenLayers.LonLat(0, 0),
-				zoom: 6,
-				numZoomLevels: 60
+				center: new OpenLayers.LonLat(0, 0)
+				//zoom: 1,
+				//numZoomLevels: 22
+				//controls: [ 
+				//new OpenLayers.Control.LayerSwitcher(),
+				//new OpenLayers.Control.Navigation({zoomWheelEnabled : true, cumulative: false, mouseWheelOptions: {interval: 100, maxDelta: 1}}),
+				//new OpenLayers.Control.MousePosition(),
+				//new OpenLayers.Control.EditingToolbar(vectors)
+				//]
 			});
 			
 
@@ -122,11 +128,14 @@
 			//map.addLayer(vectors);
             //map.addLayers([wms, vectors]);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.addControl(new OpenLayers.Control.MousePosition());
-			map.addControl(new OpenLayers.Control.Navigation());
-            map.zoomToMaxExtent();
+            //map.addControl(new OpenLayers.Control.MousePosition());
+	    //map.addControl(new OpenLayers.Control.Navigation(
+	//		{zoomWheelEnabled : true, mouseWheelOptions : { cumulative: false, interval: 200, maxDelta: 1} }
+//			));
+	    map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
+            //map.zoomToMaxExtent();
 			
-            map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
+
             var options = {
                 hover: true,
                 onSelect: serialize
@@ -792,7 +801,8 @@
 											</ul>
 											<button type="submit" class="btn" onclick="removeSelected();">Remove features</button>
 											<button type="submit" class="btn" onclick="serializeSelected();"/>Dump features</button>
-											<button type="submit" class="btn" onclick="convertSelectedToPolygon2();">Convert to polygon</button>
+											<button type="submit" class="btn" onclick="convertSelectedToPolygon2();">Auto Convert to ring</button>
+											<button type="submit" class="btn" onclick="convertSelectedToPolygon();">Convert to ring</button>
 											<button type="submit" class="btn" onclick="convertSelectedToPoints();">Convert to points</button>
 											<button type="submit" class="btn" onclick="labelize();">Label features</button>
 										</li>
