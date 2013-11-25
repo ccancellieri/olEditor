@@ -201,42 +201,26 @@
 		for ( var key in controls) {
 			map.addControl(controls[key]);
 		}
-
-		map.setCenter(new OpenLayers.LonLat(0, 0), 3);
 		document.getElementById('noneToggle').checked = true;
+		
+		map.setCenter(new OpenLayers.LonLat(0, 0), 3);
+		// make map fullscreen
+		updateFullMap();
+		window.onresize = function (){updateFullMap();};
+		
+		// make tools draggable 
+		$("#toolMaster").draggable();
+		
+	}
+	
+	// sets the map <div> to the inner window size
+	function updateFullMap(){
+		mapdiv=document.getElementById('map');
+		  mapdiv.style.height=(window.innerHeight)+"px";
+		  mapdiv.style.Width="99%";
+		  setTimeout( function() { map.updateSize();}, 200);
 	}
 
-//	function update() {
-//		// reset modification mode
-//		controls.modify.mode = OpenLayers.Control.ModifyFeature.RESHAPE;
-//		var rotate = document.getElementById("rotate").checked;
-//		if (rotate) {
-//			controls.modify.mode |= OpenLayers.Control.ModifyFeature.ROTATE;
-//		}
-//		var resize = document.getElementById("resize").checked;
-//		if (resize) {
-//			controls.modify.mode |= OpenLayers.Control.ModifyFeature.RESIZE;
-//			var keepAspectRatio = document.getElementById("keepAspectRatio").checked;
-//			if (keepAspectRatio) {
-//				controls.modify.mode &= ~OpenLayers.Control.ModifyFeature.RESHAPE;
-//			}
-//		}
-//		var drag = document.getElementById("drag").checked;
-//		if (drag) {
-//			controls.modify.mode |= OpenLayers.Control.ModifyFeature.DRAG;
-//		}
-//		if (rotate || drag) {
-//			controls.modify.mode &= ~OpenLayers.Control.ModifyFeature.RESHAPE;
-//		}
-//		controls.modify.createVertices = document
-//				.getElementById("createVertices").checked;
-//		var sides = parseInt(document.getElementById("sides").value);
-//		sides = Math.max(3, isNaN(sides) ? 0 : sides);
-//		controls.regular.handler.sides = sides;
-//		var irregular = document.getElementById("irregular").checked;
-//		controls.regular.handler.irregular = irregular;
-//	}
-	
 	function configureSelect(config, value) {
 		//TODO
 	}
