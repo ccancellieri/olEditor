@@ -1,3 +1,26 @@
+/*
+ *  olEditor - Open Source geospatial batch processing system
+ *  Author: Carlo Cancellieri - GeoSolutions SAS
+ *  Site: http://geo-solutions.it/
+ *  Copyright (C) 2013-2014 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 var map, vectors, formats, controls, snap;
 OpenLayers.ProxyHost = "http://localhost:8080/";
 
@@ -62,59 +85,64 @@ function init() {
 		div : "map",
 		layers : [ new OpenLayers.Layer.Google("Google Hybrid", {
 			type : google.maps.MapTypeId.HYBRID,
-			numZoomLevels : 22,
+//			numZoomLevels : 22,
 			visibility : false
 		}), new OpenLayers.Layer.Google("Google Satellite", {
 			type : google.maps.MapTypeId.SATELLITE,
-			numZoomLevels : 22
+//			numZoomLevels : 22
 		}), new OpenLayers.Layer.Google("Google Streets", {
 			visibility : false
 		}),
 		// the SATELLITE layer has all 22 zoom level, so we add it first to
 		// become the internal base layer that determines the zoom levels of
-		// the
-		// map.
+		// the map.
 		new OpenLayers.Layer.Google("Google Physical", {
 			type : google.maps.MapTypeId.TERRAIN,
 			visibility : false
 		}), new OpenLayers.Layer.Google("Google Streets", // the default
 		{
-			numZoomLevels : 22,
+//			numZoomLevels : 22,
 			visibility : false
 		}), new OpenLayers.Layer.OSM(), new OpenLayers.Layer("Blank", {
 			isBaseLayer : true
 		}),
 		// world,
 		vectors ],
-		center : new OpenLayers.LonLat(0, 0)
+		center : new OpenLayers.LonLat(0, 0),
+		fractionalZoom: true,
 	// zoom: 1,
 	// numZoomLevels: 22
-	// controls: [
-	// new OpenLayers.Control.LayerSwitcher(),
-	// new OpenLayers.Control.Navigation({zoomWheelEnabled : true,
-	// cumulative: false, mouseWheelOptions: {interval: 100, maxDelta: 1}}),
-	// new OpenLayers.Control.MousePosition(),
-	// new OpenLayers.Control.EditingToolbar(vectors)
-	// ]
+	 controls: [
+		 new OpenLayers.Control.LayerSwitcher(),
+		 new OpenLayers.Control.Attribution(),
+	     new OpenLayers.Control.PanZoomBar(),
+		 new OpenLayers.Control.Navigation(
+				 {
+				 zoomWheelEnabled : true,
+				 cumulative: false, 
+				 mouseWheelOptions: {interval: 100, maxDelta: 1}
+				 }),
+	 	new OpenLayers.Control.MousePosition()
+	 ]
 	});
 
 	OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
 
 	// map.addLayer(vectors);
 	// map.addLayers([wms, vectors]);
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	// map.addControl(new OpenLayers.Control.LayerSwitcher());
 	// map.addControl(new OpenLayers.Control.MousePosition());
 	// map.addControl(new OpenLayers.Control.Navigation(
 	// {zoomWheelEnabled : true, mouseWheelOptions : { cumulative: false,
 	// interval: 200, maxDelta: 1} }
 	// ));
-	map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
+	// map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
 	map.zoomToMaxExtent();
 
-	var options = {
-		hover : true,
-		onSelect : serialize
-	};
+//	var options = {
+//		hover : true,
+//		onSelect : serialize
+//	};
 	// var select = new OpenLayers.Control.SelectFeature(vectors, options);
 	// map.addControl(select);
 	// select.activate();
@@ -223,8 +251,9 @@ function init() {
 // sets the map <div> to the inner window size
 function updateFullMap() {
 	mapdiv = document.getElementById('map');
-	mapdiv.style.height = (window.innerHeight) + "px";
-	mapdiv.style.Width = "99%";
+	mapdiv.style.height = (window.innerHeight-2) + "px";
+	mapdiv.style.width = (window.innerWidth-2) + "px";
+//	mapdiv.style.Width = "99%";
 	setTimeout(function() {
 		map.updateSize();
 	}, 200);
