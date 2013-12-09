@@ -251,8 +251,10 @@ function init() {
 // sets the map <div> to the inner window size
 function updateFullMap() {
 	mapdiv = document.getElementById('map');
-	mapdiv.style.height = (window.innerHeight-2) + "px";
-	mapdiv.style.width = (window.innerWidth-2) + "px";
+	mapdiv.style.height = $(window).height()-2 + "px";
+	mapdiv.style.width = $(window).width()-2 + "px";
+//	mapdiv.style.height = (window.innerHeight-2) + "px";
+//	mapdiv.style.width = (window.innerWidth-2) + "px";
 //	mapdiv.style.Width = "99%";
 	setTimeout(function() {
 		map.updateSize();
