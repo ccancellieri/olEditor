@@ -88,7 +88,7 @@ function init() {
 //			numZoomLevels : 22,
 			visibility : false
 		}), new OpenLayers.Layer.Google("Google Satellite", {
-			type : google.maps.MapTypeId.SATELLITE,
+			type : google.maps.MapTypeId.SATELLITE
 //			numZoomLevels : 22
 		}), new OpenLayers.Layer.Google("Google Streets", {
 			visibility : false
