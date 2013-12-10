@@ -257,10 +257,10 @@ function init() {
 // sets the map <div> to the inner window size
 function updateFullMap() {
 	var mapdiv = document.getElementById('map');
-	console.log("doc height:"+$(document).height());
-	console.log("doc width:"+$(document).width());
-	console.log("wind height:"+$(window).height());
-	console.log("wind width:"+$(window).width());
+//	console.log("doc height:"+$(document).height());
+//	console.log("doc width:"+$(document).width());
+//	console.log("wind height:"+$(window).height());
+//	console.log("wind width:"+$(window).width());
 
 //	mapdiv.style.height = $(document).height() + "px";
 //	mapdiv.style.width = $(document).width() + "px";
