@@ -45,7 +45,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 .modal-backdrop,.modal-backdrop.fade.in {
 	opacity: 0.1;
-	filter: alpha(opacity =                   0);
+	filter: alpha(opacity =                       0);
 }
 </style>
 
@@ -83,10 +83,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<!-- NAVIGATOR -->
 						<a role="button" class="btn btn-success" id="noneToggle"
 							onclick="toggleControl('none');">Move</a>
+
 						<!-- SELECTOR -->
-						<a role="button" class="btn btn-primary" id="selectToggle"
-							onclick="toggleControl('select');">Select [<span id="counter">0</span>]
-						</a>
+						<div class="btn-group">
+							<button class="btn btn-info dropdown-toggle" id="selectToggle"
+								data-toggle="dropdown" data-hover="dropdown">
+								Select [<span id="counter">0</span>]</span>
+							</button>
+							<ul class="dropdown-menu" style="padding: 5px;">
+								<li role="presentation"><a role="presentation"
+									class="dropdown-header" onclick="toggleControl('select');">select</a></li>
+								<li role="presentation"><a role="presentation"
+									class="dropdown-header" onclick="selectAll();">select All</a></li>
+								<li role="presentation"><a role="presentation"
+									class="dropdown-header"
+									onclick="unselectAll();">unselect All</a></li>
+							</ul>
+						</div>
+
 						<!-- VIEW -->
 						<div class="btn-group">
 							<button class="btn btn-info dropdown-toggle"
@@ -102,6 +116,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 										features</a></li>
 							</ul>
 						</div>
+
 						<!-- MODIFY -->
 						<a href="#modifyFeatureModal" data-toggle="modal" role="button"
 							class="btn btn-warning" id="modifyToggle"

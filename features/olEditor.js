@@ -267,8 +267,15 @@ function updateFullMap() {
 	}, 200);
 }
 
-function configureSelect(config, value) {
-	// TODO
+function unselectAll(){
+	controls['select'].unselectAll();
+}
+
+function selectAll() {
+	unselectAll();
+	for (var i=0 ; i<vectors.features.length; i++){ 
+		controls['select'].select(vectors.features[i]);
+	}
 }
 
 function configureModifyFeature(config, value) {
