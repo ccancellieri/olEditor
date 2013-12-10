@@ -42,15 +42,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 #controlToggle li {
 	list-style: none;
 }
+
+.modal-backdrop,.modal-backdrop.fade.in {
+	opacity: 0.1;
+	filter: alpha(opacity =                   0);
+}
 </style>
 
 <script src="./features/OpenLayers.js"></script>
 
 <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
 
-<!-- <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script> -->
 <script
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <script
 	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 
@@ -160,12 +165,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 								<li class="divider"></li>
 								<li role="presentation"><a role="presentation"
 									class="dropdown-header" id="simplify" href="#simplifyModal"
-									data-toggle="modal" onclick="simplify();">Simplify
-										LineString</a></li>
-								<li role="presentation"><a role="presentation"
-									class="dropdown-header" id="animation" href="#simplifyModal"
-									data-toggle="modal" onclick="animationHandler();">Start
-										simplify animation</a></li>
+									data-toggle="modal">Simplify LineString</a></li>
 							</ul>
 						</div>
 						<!-- LOADER -->
@@ -220,6 +220,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</ul>
 			</div>
 		</div>
+		<div class="modal-footer">
+			<!-- 			<a href="#" data-dismiss="modal" class="btn btn-primary">Ok</a> -->
+			<a href="#" data-dismiss="modal" class="btn">Close</a>
+		</div>
 	</div>
 
 	<div class="modal hide fade" id="simplifyModal" aria-hidden="false">
@@ -231,9 +235,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div class="modal-body">
 			<div>
 				<label for="tolerance">Tolerance factor:</label> <input
-					name="tolerance" id="tolerance" type="number" min="0" max="1"
-					step="0.00001" value="0.001">
+					name="tolerance" id="tolerance" type="number" min="0" max="10000"
+					step="0.01" value="1">
 			</div>
+		</div>
+		<div class="modal-footer">
+			<a href="#" data-dismiss="modal" class="btn btn-primary"
+				onclick="simplify();">Ok</a> <a href="#" data-dismiss="modal"
+				class="btn">Close</a>
 		</div>
 	</div>
 
@@ -258,6 +267,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</label>
 			</div>
 		</div>
+		<div class="modal-footer">
+			<!-- 			<a href="#" data-dismiss="modal" class="btn btn-primary"  onclick="">Ok</a> -->
+			<a href="#" data-dismiss="modal" class="btn">Close</a>
+		</div>
 	</div>
 
 	<div class="modal hide fade" id="modifyFeatureModal"
@@ -268,29 +281,48 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<h4 class="modal-title">Configure</h4>
 		</div>
 		<div class="modal-body">
-			<div>
-				<label class="checkbox"> <input type="checkbox"
-					id="createVertices" type="checkbox" name="createVertices"
-					onchange="configureModifyFeature('createVertices',this.value)">allow
-					vertices creation
-				</label><label class="checkbox"> <input id="rotate" type="checkbox"
-					name="rotate"
-					onchange="configureModifyFeature('rotate',this.value)">allow
-					rotation
-				</label><label class="checkbox"> <input id="resize" type="checkbox"
-					name="resize"
-					onchange="configureModifyFeature('resize',this.value)">allow
-					resizing
-				</label><label class="checkbox"> <input id="keepAspectRatio"
-					type="checkbox" name="keepAspectRatio"
-					onchange="configureModifyFeature('keepAspectRatio',this.value)"
-					checked="checked">keep aspect ratio
-				</label> <label class="checkbox"> <input id="drag" type="checkbox"
-					name="drag" onchange="configureModifyFeature('drag',this.value)">allow
-					dragging
-				</label>
-			</div>
+			<!-- DRAG -->
+			<label class="radio"> <input id="drag" type="radio"
+				name="modify" onchange="configureModifyFeature('drag',this.checked)">drag
+			</label>
+
+			<!-- RESHAPE -->
+			<label class="radio"><input id="reshape" type="radio"
+				name="modify"
+				onchange="configureModifyFeature('reshape',this.checked)" />reshape
+			</label>
+			<ul>
+				<li><label class="checkbox"><input id="createVertices"
+						type="checkbox" name="createVertices"
+						onchange="configureModifyFeature('createVertices',this.checked)" />vertices
+						creation </label></li>
+			</ul>
+
+			<!-- ROTATION -->
+			<label class="radio"> <input id="rotate" type="radio"
+				name="modify"
+				onchange="configureModifyFeature('rotate',this.checked)" />rotation
+			</label>
+
+			<!-- RESIZE -->
+			<label class="radio"> <input id="resize" type="radio"
+				name="modify"
+				onchange="configureModifyFeature('resize',this.checked)"
+				checked="checked" />resize
+			</label>
+			<ul>
+				<li><label class="checkbox"> <input
+						id="keepAspectRatio" type="checkbox" name="keepAspectRatio"
+						onchange="configureModifyFeature('keepAspectRatio',this.checked)"
+						checked="checked" />keep aspect ratio
+				</label></li>
+			</ul>
 		</div>
+		<div class="modal-footer">
+			<!-- 			<a href="#" data-dismiss="modal" class="btn btn-primary"  onclick="">Ok</a> -->
+			<a href="#" data-dismiss="modal" class="btn">Close</a>
+		</div>
+	</div>
 	</div>
 
 
@@ -364,8 +396,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			</div>
 		</div>
 		<div class="modal-footer">
-			<a href="#" data-dismiss="modal" class="btn btn-primary" onclick="deserialize();">Import</a>
-			<a href="#" data-dismiss="modal" class="btn">Close</a>
+			<a href="#" data-dismiss="modal" class="btn btn-primary"
+				onclick="deserialize();">Import</a> <a href="#" data-dismiss="modal"
+				class="btn">Close</a>
 		</div>
 	</div>
 
@@ -394,8 +427,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<option value="encoded_polyline">Encoded Polyline</option>
 				</select> <label for="prettyPrint">Pretty print</label> <input
 					id="exporterPrettyPrint" type="checkbox" name="prettyPrint"
-					value="1" onchange="serializeSelected();"> <br>Projection:<select id="outproj"
-					onchange="updateFormats();serializeSelected();">
+					value="1" onchange="serializeSelected();"> <br>Projection:<select
+					id="outproj" onchange="updateFormats();serializeSelected();">
 					<option value="EPSG:4326" selected="selected">EPSG:4326</option>
 					<option value="EPSG:900913">Spherical Mercator</option>
 				</select> <br>
