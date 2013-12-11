@@ -116,20 +116,20 @@ function init() {
 		// world,
 		vectors ],
 		center : new OpenLayers.LonLat(0, 0),
-		// fractionalZoom : true,
-		// zoom: 1,
-		// numZoomLevels : 22,
-		controls : [ new OpenLayers.Control.LayerSwitcher(),
-				new OpenLayers.Control.Attribution(),
-				new OpenLayers.Control.PanZoomBar(),
-				new OpenLayers.Control.Navigation({
-					zoomWheelEnabled : true,
-					cumulative : false,
-					mouseWheelOptions : {
-						interval : 100,
-						maxDelta : 1
-					}
-				}), new OpenLayers.Control.MousePosition() ]
+	// fractionalZoom : true,
+	// zoom: 1,
+	// numZoomLevels : 22,
+	// controls : [ new OpenLayers.Control.LayerSwitcher(),
+	// new OpenLayers.Control.Attribution(),
+	// new OpenLayers.Control.PanZoomBar(),
+	// new OpenLayers.Control.Navigation({
+	// zoomWheelEnabled : true,
+	// cumulative : false,
+	// mouseWheelOptions : {
+	// interval : 100,
+	// maxDelta : 1
+	// }
+	// }), new OpenLayers.Control.MousePosition() ]
 	});
 
 	OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
@@ -206,6 +206,18 @@ function init() {
 		});
 	}
 	controls = {
+		switcher : new OpenLayers.Control.LayerSwitcher(),
+		attribution : new OpenLayers.Control.Attribution(),
+		pan : new OpenLayers.Control.PanZoomBar(),
+		navigation : new OpenLayers.Control.Navigation({
+			zoomWheelEnabled : true,
+			cumulative : false,
+			mouseWheelOptions : {
+				interval : 100,
+				maxDelta : 1
+			}
+		}),
+		mouse : new OpenLayers.Control.MousePosition(),
 		point : new OpenLayers.Control.DrawFeature(vectors,
 				OpenLayers.Handler.Point),
 		line : new OpenLayers.Control.DrawFeature(vectors,
@@ -257,14 +269,14 @@ function init() {
 // sets the map <div> to the inner window size
 function updateFullMap() {
 	var mapdiv = document.getElementById('map');
-//	console.log("doc height:"+$(document).height());
-//	console.log("doc width:"+$(document).width());
-//	console.log("wind height:"+$(window).height());
-//	console.log("wind width:"+$(window).width());
+	// console.log("doc height:"+$(document).height());
+	// console.log("doc width:"+$(document).width());
+	// console.log("wind height:"+$(window).height());
+	// console.log("wind width:"+$(window).width());
 
-//	mapdiv.style.height = $(document).height() + "px";
-//	mapdiv.style.width = $(document).width() + "px";
-	
+	// mapdiv.style.height = $(document).height() + "px";
+	// mapdiv.style.width = $(document).width() + "px";
+
 	mapdiv.style.height = $(window).height() - 2 + "px";
 	mapdiv.style.width = $(window).width() - 2 + "px";
 	// mapdiv.style.height = (window.innerHeight-2) + "px";
@@ -275,13 +287,13 @@ function updateFullMap() {
 	}, 200);
 }
 
-function unselectAll(){
+function unselectAll() {
 	controls['select'].unselectAll();
 }
 
 function selectAll() {
 	unselectAll();
-	for (var i=0 ; i<vectors.features.length; i++){ 
+	for ( var i = 0; i < vectors.features.length; i++) {
 		controls['select'].select(vectors.features[i]);
 	}
 }
@@ -590,8 +602,12 @@ function loadFile(file) {
 // ////////////// SIMPLIFY
 
 // Control behaviour
+function simplifySelected() {
+	simplify(vectors.selectedFeatures);
+}
+
 var lastValue = 1;
-function simplify() {
+function simplify(features) {
 	var min = 0;
 	var max = 10000;
 	var givenVal = parseFloat(document.getElementById('tolerance').value);
@@ -603,15 +619,26 @@ function simplify() {
 			useVal = (givenVal < min) ? min : max;
 		}
 	}
-	for ( var i = 0; i < vectors.features.length; ++i) {
-		if (vectors.features[i].geometry instanceof OpenLayers.Geometry.LineString) {
-			var newLineString = vectors.features[i].geometry.simplify(useVal);
-			var originalVerticesCnt = vectors.features[i].geometry.components.length;
+
+	// WORKAROUND Done due to the refresh draw error
+	toggleControl('select');
+
+	for ( var i = 0; i < features.length; ++i) {
+		if (features[i].geometry instanceof OpenLayers.Geometry.LineString) {
+			var newLineString = features[i].geometry.simplify(useVal);
+			var originalVerticesCnt = features[i].geometry.components.length;
 			var simplifiedVerticesCnt = newLineString.getVertices().length;
-			vectors.destroyFeatures(vectors.features[i]);
-			vectors.addFeatures([ new OpenLayers.Feature.Vector(newLineString) ]);
-			
-			alert("Feature n. "+i+" decreased by "+(((originalVerticesCnt-simplifiedVerticesCnt)/originalVerticesCnt)*100).toFixed(2)+"%.");
+			vectors.removeFeatures(features[i]);
+			vectors.destroyFeatures(features[i]);
+			var feature = new OpenLayers.Feature.Vector(newLineString);
+			vectors.addFeatures([ feature ]);
+			vectors.drawFeature(feature);
+
+			alert("Feature n. "
+					+ i
+					+ " decreased by "
+					+ (((originalVerticesCnt - simplifiedVerticesCnt) / originalVerticesCnt) * 100)
+							.toFixed(2) + "%.");
 			// var infotxt = '<ul><li>Original LineString: <strong>';
 			// infotxt += originalVerticesCnt + ' vertices</strong></li>';
 			// infotxt += ' <li>Simplified geometry: <strong>' +
@@ -624,7 +651,6 @@ function simplify() {
 	}
 	lastValue = useVal;
 	document.getElementById('tolerance').value = lastValue;
-	vectors.refresh();
 };
 
 // /////////////SIMPLIFY ANIMATED
