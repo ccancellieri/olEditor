@@ -81,7 +81,7 @@ function init() {
 			: OpenLayers.Layer.Vector.prototype.renderers;
 	vectors = new OpenLayers.Layer.Vector("WFS", {
 		options : [ {
-			numZoomLevels : 22
+		// numZoomLevels : 22
 		} ]
 	});
 
@@ -89,13 +89,16 @@ function init() {
 		div : "map",
 		layers : [ new OpenLayers.Layer.Google("Google Hybrid", {
 			type : google.maps.MapTypeId.HYBRID,
-			numZoomLevels : 22,
+			numZoomLevels : 23,
+			MAX_ZOOM_LEVEL : 22,
 			visibility : false
 		}), new OpenLayers.Layer.Google("Google Satellite", {
 			type : google.maps.MapTypeId.SATELLITE,
-			numZoomLevels : 22
+			numZoomLevels : 23,
+			MAX_ZOOM_LEVEL : 22,
 		}), new OpenLayers.Layer.Google("Google Streets", {
-			numZoomLevels : 22,
+			numZoomLevels : 23,
+			MAX_ZOOM_LEVEL : 22,
 			visibility : false
 		}),
 		// the SATELLITE layer has all 22 zoom level, so we add it first to
@@ -103,19 +106,23 @@ function init() {
 		// the map.
 		new OpenLayers.Layer.Google("Google Physical", {
 			type : google.maps.MapTypeId.TERRAIN,
-			numZoomLevels : 22,
+			numZoomLevels : 23,
+			MAX_ZOOM_LEVEL : 22,
 			visibility : false
 		}), new OpenLayers.Layer.Google("Google Streets", // the default
 		{
-			numZoomLevels : 22,
+			numZoomLevels : 23,
+			MAX_ZOOM_LEVEL : 22,
 			visibility : false
 		}), new OpenLayers.Layer.OSM(), new OpenLayers.Layer("Blank", {
-			numZoomLevels : 22,
+			numZoomLevels : 23,
+			MAX_ZOOM_LEVEL : 22,
 			isBaseLayer : true
 		}),
 		// world,
 		vectors ],
 		center : new OpenLayers.LonLat(0, 0),
+		controls : []
 	// fractionalZoom : true,
 	// zoom: 1,
 	// numZoomLevels : 22,
@@ -145,36 +152,11 @@ function init() {
 	// map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
 	map.zoomToMaxExtent();
 
-	// var options = {
-	// hover : true,
-	// onSelect : serialize
-	// };
-	// var select = new OpenLayers.Control.SelectFeature(vectors, options);
-	// map.addControl(select);
-	// select.activate();
-
 	updateFormats();
 
 	// add file selector
 	// document.getElementById('files').addEventListener('change',
 	// handleFileSelect, false);
-
-	// configure the snapping agent
-	snap = new OpenLayers.Control.Snapping({
-		layer : vectors
-	});
-	map.addControl(snap);
-	snap.activate();
-	// add behavior to snap elements
-	var snapCheck = document.getElementById("snap_toggle");
-	snapCheck.checked = true;
-	snapCheck.onclick = function() {
-		if (snapCheck.checked) {
-			snap.activate();
-		} else {
-			snap.deactivate();
-		}
-	};
 
 	// selection
 	vectors.events
@@ -205,6 +187,7 @@ function init() {
 			"featureunselected" : report
 		});
 	}
+
 	controls = {
 		switcher : new OpenLayers.Control.LayerSwitcher(),
 		attribution : new OpenLayers.Control.Attribution(),
@@ -218,6 +201,10 @@ function init() {
 			}
 		}),
 		mouse : new OpenLayers.Control.MousePosition(),
+		// configure the snapping agent
+		snap : new OpenLayers.Control.Snapping({
+			layer : vectors
+		}),
 		point : new OpenLayers.Control.DrawFeature(vectors,
 				OpenLayers.Handler.Point),
 		line : new OpenLayers.Control.DrawFeature(vectors,
@@ -251,7 +238,20 @@ function init() {
 	for ( var key in controls) {
 		map.addControl(controls[key]);
 	}
-	document.getElementById('noneToggle').checked = true;
+
+	// add behavior to snap elements
+	var snap = controls['snap'];
+	var snapCheck = document.getElementById("snap_toggle");
+	snapCheck.checked = true;
+	snapCheck.onclick = function() {
+		if (snapCheck.checked) {
+			snap.activate();
+		} else {
+			snap.deactivate();
+		}
+	};
+
+	// document.getElementById('moveToggle').checked = true;
 
 	map.setCenter(new OpenLayers.LonLat(0, 0), 3);
 
@@ -332,14 +332,30 @@ function configurePolygon(config, value) {
 }
 
 function toggleControl(element) {
+	var enabledParentButton = undefined;
 	for (key in controls) {
 		var control = controls[key];
+		var clazz = "btn-large";
+		var toggle = $("#" + key + "Toggle");
+		var parentButton = toggle.parent().parent().find("button:first");
 		if (element == key) {
+			toggle.addClass(clazz);
 			control.activate();
+			if (parentButton.hasClass("toolsButton")) {
+				parentButton.addClass(clazz);
+				enabledParentButton = parentButton;
+			}
 		} else {
+			toggle.removeClass(clazz);
 			control.deactivate();
+			if (enabledParentButton != undefined
+					&& $(parentButton).get(0) != $(enabledParentButton).get(0)
+					&& parentButton.hasClass("toolsButton")) {
+				parentButton.removeClass(clazz);
+			}
 		}
 	}
+
 }
 
 function removeSelected() {

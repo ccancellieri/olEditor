@@ -75,18 +75,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<div class="span12">
 				<div id="toolMaster" href="#" data-trigger="manual"
 					data-toggle="popover" data-placement="right"
-					data-content="Here is some amazing content. It's very engaging. right?"
+					data-content="Tools bar"
 					data-original-title="Popover Title" align="center"
 					style="z-index: 100; top: 0px;">
 					<!--  TOOLBAR  -->
 					<div id="toolbar" class="btn-toolbar">
 						<!-- NAVIGATOR -->
-						<a role="button" class="btn btn-success" id="noneToggle"
+						<a role="button" class="btn btn-success toolsButton" id="navigationToggle"
 							onclick="toggleControl('navigation');">Move</a>
 
 						<!-- SELECTOR -->
 						<div class="btn-group">
-							<button class="btn btn-info dropdown-toggle" id="selectToggle"
+							<button class="btn btn-info dropdown-toggle toolsButton" id="selectToggle"
 								data-toggle="dropdown" data-hover="dropdown">
 								Select [<span id="counter">0</span>]</span>
 							</button>
@@ -103,7 +103,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 						<!-- VIEW -->
 						<div class="btn-group">
-							<button class="btn btn-info dropdown-toggle"
+							<button class="btn btn-info dropdown-toggle toolsButton" id="viewToggle"
 								data-toggle="dropdown" data-hover="dropdown">
 								View<span class="caret"></span>
 							</button>
@@ -119,12 +119,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 						<!-- MODIFY -->
 						<a href="#modifyFeatureModal" data-toggle="modal" role="button"
-							class="btn btn-warning" id="modifyToggle"
+							class="btn btn-warning toolsButton" id="modifyToggle"
 							onclick="toggleControl('modify');">Modify</a>
 
 						<!-- REMOVE -->
 						<div class="btn-group">
-							<button class="btn btn-danger dropdown-toggle"
+							<button class="btn btn-danger dropdown-toggle toolsButton"
 								data-toggle="dropdown" data-hover="dropdown">
 								Remove<span class="caret"></span>
 							</button>
@@ -138,32 +138,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 						<!-- DRAW -->
 						<div class="btn-group">
-							<button class="btn btn-danger dropdown-toggle"
-								data-toggle="dropdown" data-hover="dropdown">
-								Draw<span class="caret"></span>
+							<button class="btn btn-danger dropdown-toggle toolsButton" id="drawToggle"
+								data-toggle="dropdown" data-hover="dropdown">Draw<span class="caret"></span>
 							</button>
 							<ul id="controlToggle" class="dropdown-menu">
-								<li role="presentation"><a role="presentation"
-									class="dropdown-header" onclick="toggleControl('point');">
-										<label name="type" id="pointToggle">point</label>
-								</a></li>
-								<li role="presentation"><a role="presentation"
-									class="dropdown-header" onclick="toggleControl('line');"> <label
-										name="type" id="lineToggle">line</label></a></li>
-								<li role="presentation"><a role="presentation"
-									class="dropdown-header" href="#regularPolygonModal"
-									data-toggle="modal" onclick="toggleControl('regular');"> <label
-										name="type" id="regularPolygonToggle">regular polygon</label></a></li>
-								<li role="presentation"><a role="presentation"
-									class="dropdown-header" href="#irregularPolygonModal"
-									data-toggle="modal" onclick="toggleControl('polygon');"> <label
-										name="type" id="irregularPolygonToggle">irregular
-											polygon</label></a></li>
+								<li role="presentation" id="pointToggle"><a role="presentation"
+									class="dropdown-header" href="#" onclick="toggleControl('point');">point</a></li>
+								<li role="presentation" id="lineToggle"><a role="presentation"
+									class="dropdown-header" href="#" onclick="toggleControl('line');">line</a></li>
+								<li role="presentation" id="regularToggle"><a role="presentation"
+									class="dropdown-header" href="#regularModal"
+									data-toggle="modal" onclick="toggleControl('regular');">regular polygon</a></li>
+								<li role="presentation" id="polygonToggle"><a role="presentation"
+									data-toggle="modal" class="dropdown-header" href="#" onclick="toggleControl('polygon');" >irregular
+											polygon</a></li>
 							</ul>
 						</div>
 						<!-- ACTIONS -->
 						<div class="btn-group">
-							<button class="btn btn-danger dropdown-toggle"
+							<button class="btn btn-danger dropdown-toggle toolsButton" id="actionsToggle"
 								data-toggle="dropdown" data-hover="dropdown">
 								Actions<span class="caret"></span>
 							</button>
@@ -185,7 +178,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						</div>
 						<!-- LOADER -->
 						<div class="btn-group">
-							<button class="btn btn-danger dropdown-toggle"
+							<button class="btn btn-danger dropdown-toggle toolsButton" id="loaderToggle"
 								data-toggle="dropdown" data-hover="dropdown">
 								Loader<span class="caret"></span>
 							</button>
@@ -201,7 +194,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</ul>
 						</div>
 						<a href="#optionsModal" data-toggle="modal" role="button"
-							class="btn btn-warning" id="optionsToggle">Options</a>
+							class="btn btn-warning toolsButton" id="optionsToggle">Options</a>
 					</div>
 					<!--  END TOOLBAR  -->
 				</div>
@@ -341,7 +334,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 
 
-	<div class="modal hide fade" id="regularPolygonModal"
+	<div class="modal hide fade" id="regularModal"
 		aria-hidden="false">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal"
@@ -359,25 +352,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 	</div>
 
-	<div class="modal hide fade" id="regularPolygonModal"
-		aria-hidden="false">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal"
-				aria-hidden="true">×</button>
-			<h4 class="modal-title">Configure</h4>
-		</div>
-		<div class="modal-body">
-			<div>
-				<ul>
-					<li><label class="checkbox"> <input type="checkbox"
-							id="polygonIrregular" name="irregular"
-							onchange="configurePolygon('irregular', this.value)">
-							Irregular
-					</label></li>
-				</ul>
-			</div>
-		</div>
-	</div>
+<!-- 	<div class="modal hide fade" id="polygonModal" -->
+<!-- 		aria-hidden="false"> -->
+<!-- 		<div class="modal-header"> -->
+<!-- 			<button type="button" class="close" data-dismiss="modal" -->
+<!-- 				aria-hidden="true">×</button> -->
+<!-- 			<h4 class="modal-title">Configure</h4> -->
+<!-- 		</div> -->
+<!-- 		<div class="modal-body"> -->
+<!-- 			<div> -->
+<!-- 				<ul> -->
+<!-- 					<li><label class="checkbox"> <input type="checkbox" -->
+<!-- 							id="polygonIrregular" name="irregular" -->
+<!-- 							onchange="configurePolygon('irregular', this.value)"> -->
+<!-- 							Irregular -->
+<!-- 					</label></li> -->
+<!-- 				</ul> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
 
 
 	<div class="modal hide fade" id="importerModal" aria-hidden="false">
